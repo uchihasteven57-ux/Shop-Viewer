@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Finder PWA</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Shops 🏬</h2>
+                <div class="sidebar-controls">
+                    <button id="all-shops-btn">All Shops Map</button>
+                    <div class="filter-group">
+                        <label for="rating-filter">Filter by Rating:</label>
+                        <select id="rating-filter">
+                            <option value="0">All Ratings</option>
+                            <option value="1">⭐ 1 Star+</option>
+                            <option value="2">⭐⭐ 2 Stars+</option>
+                            <option value="3">⭐⭐⭐ 3 Stars+</option>
+                            <option value="4">⭐⭐⭐⭐ 4 Stars+</option>
+                            <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                        </select>
+                    </div>
+                    <div class="group-by-group">
+                        <label for="rating-group">Group on Map by Rating:</label>
+                        <select id="rating-group">
+                            <option value="0">Show All</option>
+                            <option value="1">⭐ 1 Star</option>
+                            <option value="2">⭐⭐ 2 Stars</option>
+                            <option value="3">⭐⭐⭐ 3 Stars</option>
+                            <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                            <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <ul id="shop-list">
+                </ul>
+        </div>
+        <div class="main-content">
+            <div class="main-header">
+                <button id="view-all-btn">View All on Map 🗺️</button>
+                <button id="download-data-btn">Download Data 📥</button>
+            </div>
+            <div id="shop-details" class="shop-details-container">
+                </div>
+            <div id="map" class="map-container"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
