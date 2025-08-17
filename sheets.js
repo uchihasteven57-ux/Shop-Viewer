@@ -1,8 +1,7 @@
 // Google Sheets + API Config
 const SHEET_ID = "1NtK77MmwSv8QF14AKjxua-SwNy2k3wF0ekCwO--2vBI"; // 👈 Replace with your Google Sheet ID
 const SHEET_NAME = "Sheet1";           // 👈 Replace if your sheet has a different name
-const API_KEY = "AIzaSyC56X3hyK_2OJZk9A5yyKeoX-0pVOqSOl0"; 
-const GOOGLE_MAPS_API_KEY = "AIzaSyC-w6zlVuf1Lp_kIptIj-8zdWC8SAVQQr8";
+const API_KEY = "AIzaSyCJJDB_BOD18Fq2qTDfL8lLTWVo0xf95eY"; 
 
 const SHEET_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`;
 
