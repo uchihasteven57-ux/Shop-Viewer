@@ -1,61 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop Finder PWA</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shop Explorer</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    
-    <link rel="stylesheet" href="style.css">
+  <!-- App theme -->
+  <meta name="theme-color" content="#3b82f6" />
 
-    <link rel="manifest" href="manifest.json">
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+    defer
+  ></script>
+
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    // === CONFIG ===
+    // 1) Replace SHEET_CSV_URL with your published CSV URL
+    // 2) Optionally set DEFAULT_CENTER (lat, lng) for Yangon or your area
+    window.CONFIG = {
+      SHEET_CSV_URL: "REPLACE_WITH_PUBLISHED_CSV_URL",
+      DEFAULT_CENTER: [16.8409, 96.1735], // Yangon center
+      DEFAULT_ZOOM: 12
+    };
+  </script>
+  <script src="app.js" type="module" defer></script>
 </head>
 <body>
-    <div class="app-container">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>Shops 🏬</h2>
-                <div class="sidebar-controls">
-                    <button id="all-shops-btn">All Shops Map</button>
-                    <div class="filter-group">
-                        <label for="rating-filter">Filter by Rating:</label>
-                        <select id="rating-filter">
-                            <option value="0">All Ratings</option>
-                            <option value="1">⭐ 1 Star+</option>
-                            <option value="2">⭐⭐ 2 Stars+</option>
-                            <option value="3">⭐⭐⭐ 3 Stars+</option>
-                            <option value="4">⭐⭐⭐⭐ 4 Stars+</option>
-                            <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
-                        </select>
-                    </div>
-                    <div class="group-by-group">
-                        <label for="rating-group">Group on Map by Rating:</label>
-                        <select id="rating-group">
-                            <option value="0">Show All</option>
-                            <option value="1">⭐ 1 Star</option>
-                            <option value="2">⭐⭐ 2 Stars</option>
-                            <option value="3">⭐⭐⭐ 3 Stars</option>
-                            <option value="4">⭐⭐⭐⭐ 4 Stars</option>
-                            <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <ul id="shop-list">
-                </ul>
+  <div id="app" class="layout">
+    <aside class="sidebar">
+      <div class="app-brand">
+        <div class="logo">🗺️</div>
+        <div class="brand">
+          <h1>Shop Explorer</h1>
+          <p>Data from Google Sheets</p>
         </div>
-        <div class="main-content">
-            <div class="main-header">
-                <button id="view-all-btn">View All on Map 🗺️</button>
-                <button id="download-data-btn">Download Data 📥</button>
-            </div>
-            <div id="shop-details" class="shop-details-container"></div>
-            <div id="map" class="map-container"></div>
-        </div>
-    </div>
+      </div>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="app.js"></script>
+      <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="Search shops..." />
+      </div>
+
+      <button id="allShopsBtn" class="nav-item active">All Shops</button>
+      <div id="shopList" class="shop-list" aria-label="Shop list"></div>
+
+      <footer class="sidebar-footer">
+        <button id="installBtn" class="ghost">Install App</button>
+      </footer>
+    </aside>
+
+    <main class="main">
+      <header class="toolbar">
+        <div class="left">
+          <button id="filterBtn" class="chip">
+            ⭐ Rating Filter
+          </button>
+          <button id="groupBtn" class="chip">
+            🧩 Group by Rating
+          </button>
+        </div>
+        <div class="right">
+          <button id="viewAllBtn" class="pill solid">View all</button>
+          <button id="downloadBtn" class="pill">Download data</button>
+        </div>
+      </header>
+
+      <section id="content" class="content">
+        <!-- Dynamic: map view or detail view -->
+        <div id="mapView" class="map-view">
+          <div id="map" class="map"></div>
+          <div id="legend" class="legend"></div>
+        </div>
+
+        <div id="detailView" class="detail-view hidden">
+          <div class="detail-card">
+            <div class="detail-header">
+              <img id="detailImage" alt="" />
+              <div>
+                <h2 id="detailName"></h2>
+                <div id="detailRating" class="rating"></div>
+                <div id="detailCategory" class="meta"></div>
+              </div>
+            </div>
+            <div class="detail-body">
+              <p id="detailAddress"></p>
+              <p id="detailPhone"></p>
+              <p id="detailDescription"></p>
+            </div>
+          </div>
+          <div class="detail-map">
+            <div id="detailMap" class="map small"></div>
+            <button id="backToList" class="pill">Back to All Shops</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Filter dialog -->
+  <dialog id="filterDialog">
+    <form method="dialog" class="dialog-card">
+      <h3>Filter by rating</h3>
+      <p>Select minimum rating to include.</p>
+      <div class="options">
+        <label><input type="radio" name="minRating" value="0" checked /> Any</label>
+        <label><input type="radio" name="minRating" value="5" /> 5★</label>
+        <label><input type="radio" name="minRating" value="4" /> 4★+</label>
+        <label><input type="radio" name="minRating" value="3" /> 3★+</label>
+        <label><input type="radio" name="minRating" value="2" /> 2★+</label>
+        <label><input type="radio" name="minRating" value="1" /> 1★+</label>
+      </div>
+      <menu>
+        <button value="cancel">Cancel</button>
+        <button value="apply" class="solid">Apply</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <!-- Group dialog -->
+  <dialog id="groupDialog">
+    <form method="dialog" class="dialog-card">
+      <h3>Group by rating</h3>
+      <p>Select rating groups to show on the map.</p>
+      <div class="options">
+        <label><input type="checkbox" name="groups" value="5" checked /> 5★</label>
+        <label><input type="checkbox" name="groups" value="4" checked /> 4★</label>
+        <label><input type="checkbox" name="groups" value="3" checked /> 3★</label>
+        <label><input type="checkbox" name="groups" value="2" checked /> 2★</label>
+        <label><input type="checkbox" name="groups" value="1" checked /> 1★</label>
+        <label><input type="checkbox" name="groups" value="0" checked /> unrated</label>
+      </div>
+      <menu>
+        <button value="cancel">Cancel</button>
+        <button value="apply" class="solid">Apply</button>
+      </menu>
+    </form>
+  </dialog>
 </body>
 </html>
