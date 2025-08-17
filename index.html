@@ -9,11 +9,11 @@
   <meta name="theme-color" content="#3b82f6" />
 
   <!-- PWA -->
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" href="icons/icon-192.png" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
 
-  <!-- Leaflet -->
+  <!-- Leaflet CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -24,14 +24,17 @@
   <!-- App Styles -->
   <link rel="stylesheet" href="./styles.css" />
 
+  <!-- Config -->
   <script>
     window.CONFIG = {
-      SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUyjM9WjlMz2-T9d2rDQJV65gWL7swVtDAkg-ODkzonKOjnuykUKr2NlmGN0zqp35sYulYYJLmoUo6/pub?output=csv",
+      SHEET_CSV_URL:
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUyjM9WjlMz2-T9d2rDQJV65gWL7swVtDAkg-ODkzonKOjnuykUKr2NlmGN0zqp35sYulYYJLmoUo6/pub?output=csv",
       DEFAULT_CENTER: [16.8409, 96.1735], // Yangon
       DEFAULT_ZOOM: 12
     };
   </script>
 
+  <!-- Leaflet JS -->
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -39,9 +42,37 @@
     defer
   ></script>
 
+  <!-- Main JS -->
   <script src="./main.js" type="module" defer></script>
 </head>
+
 <body>
-  <!-- The rest of the HTML structure is exactly as in the first version I sent you -->
+  <header class="app-header">
+    <h1>Shop Explorer</h1>
+  </header>
+
+  <main class="app-main">
+    <!-- Map container -->
+    <div id="map"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="controls">
+        <button id="viewAllBtn">View All</button>
+        <button id="groupByBtn">Group By</button>
+        <button id="downloadBtn">Download CSV</button>
+      </div>
+
+      <!-- Filter chips -->
+      <div id="filters" class="filters"></div>
+
+      <!-- Shop list -->
+      <ul id="shopList" class="shop-list"></ul>
+    </aside>
+  </main>
+
+  <footer class="app-footer">
+    <small>Data from Google Sheets • Built with Leaflet</small>
+  </footer>
 </body>
 </html>
